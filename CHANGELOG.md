@@ -33,13 +33,13 @@
   - Improved test code coverage.
 - Changes to xADComputer
   - BREAKING CHANGE: Previously a computer account was always set to enabled
-    regardless of `Enabled` parameter was used in a configuration. Now if
+    regardless if the `Enabled` parameter was used in a configuration. Now if
     the `Enabled` parameter is left out of the configuration, the
-    computer account will not be evaluated if it enabled. So if a computer is
-    disabled, the resource will not enabled it unless `Enabled` parameter is
+    computer account will not be evaluated if it is enabled. So if a computer is
+    disabled, the resource will not enable it unless the `Enabled` parameter is
     set to `$true` in the configuration.
   - A computer account can now be created disabled by setting the parameter
-    `CreateDisabled` to `$true`. Default a computer account will be created
+    `CreateDisabled` to `$true`. By default a computer account will be created
     as enabled.
 
 ## 2.25.0.0
