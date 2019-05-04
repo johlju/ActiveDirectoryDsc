@@ -32,6 +32,7 @@
     tests for the function 'Set-TargetResource'.
   - Improved test code coverage.
 - Changes to xADComputer
+  - Refactor the resource and unit tests.
   - BREAKING CHANGE: Previously a computer account was always set to enabled
     regardless if the `Enabled` parameter was used in a configuration. Now if
     the `Enabled` parameter is left out of the configuration, the
