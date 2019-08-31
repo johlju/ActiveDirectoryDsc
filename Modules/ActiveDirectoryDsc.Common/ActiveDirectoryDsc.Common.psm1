@@ -646,6 +646,57 @@ function Get-ADObjectParentDN
 
 <#
     .SYNOPSIS
+        Get an Active Directory object's distinguished name.
+
+    .PARAMETER Identity
+        The name of the object to return the distinguished name from.
+
+    .PARAMETER ObjectClass
+        The type of object specified in the parameter Identity.
+#>
+function Get-ADObjectDistinguishedName
+{
+    [CmdletBinding()]
+    [OutputType([System.String])]
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [System.String]
+        $Identity,
+
+        [Parameter(Mandatory = $true)]
+        [ValidateSet('Computer', 'OrganizationalUnit', 'User', 'Group')]
+        [System.String]
+        $ObjectClass
+    )
+
+    $distinguishedName = $null
+
+    switch ($ObjectClass)
+    {
+        'OrganizationalUnit'
+        {
+            $filter = 'name -eq "{0}" -and ObjectClass -eq "{1}"' -f $Identity, $ObjectClass
+        }
+
+        default
+        {
+            $filter = 'samAccountName -eq "{0}" -and ObjectClass -eq "{1}"' -f $Identity, $ObjectClass
+        }
+    }
+
+    $activeDirectoryObject = Get-ADObject -Filter $filter -ErrorAction 'Stop'
+
+    if ($activeDirectoryObject)
+    {
+        $distinguishedName = $activeDirectoryObject.DistinguishedName
+    }
+
+    return $distinguishedName
+}
+
+<#
+    .SYNOPSIS
         Validates the Members, MembersToInclude and MembersToExclude combination
         is valid. If the combination is invalid, an InvalidArgumentError is raised.
 
@@ -761,7 +812,7 @@ function Remove-DuplicateMembers
         Comma make sure we return the string array as the correct type,
         and also make sure one entry is returned as a string array.
     #>
-    return ,$uniqueMembers
+    return , $uniqueMembers
 } #end function RemoveDuplicateMembers
 
 <#
@@ -1335,7 +1386,7 @@ function Restore-ADCommonObject
     # If more than one object is returned, we pick the one that was changed last.
     $restorableObject = Get-ADObject @getAdObjectParams |
         Sort-Object -Descending -Property 'whenChanged' |
-            Select-Object -First 1
+        Select-Object -First 1
 
     $restoredObject = $null
 
@@ -1960,10 +2011,10 @@ function New-CimCredentialInstance
     )
 
     $newCimInstanceParameters = @{
-        ClassName = 'MSFT_Credential'
+        ClassName  = 'MSFT_Credential'
         ClientOnly = $true
-        Namespace = 'root/microsoft/windows/desiredstateconfiguration'
-        Property = @{
+        Namespace  = 'root/microsoft/windows/desiredstateconfiguration'
+        Property   = @{
             UserName = [System.String] $Credential.UserName
             Password = [System.String] $null
         }
@@ -2093,7 +2144,7 @@ function Get-ADDirectoryContext
     }
 
     $newObjectParameters = @{
-        TypeName = $typeName
+        TypeName     = $typeName
         ArgumentList = $newObjectArgumentList
     }
 

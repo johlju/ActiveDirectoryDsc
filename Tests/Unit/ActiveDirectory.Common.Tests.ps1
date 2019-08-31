@@ -2514,4 +2514,48 @@ InModuleScope 'ActiveDirectoryDsc.Common' {
             }
         }
     }
+
+    Describe 'ActiveDirectoryDsc.Common\Get-ADObjectDistinguishedName' {
+        Context 'When getting distinguished name for a user' {
+            BeforeAll {
+                Mock -CommandName Get-ADObject -MockWith {
+                    return @{
+                        DistinguishedName = 'CN=Value'
+                    }
+                }
+
+                $mockIdentity = 'SomeIdentity'
+            }
+
+            It 'Should return the correct values' {
+                $getADObjectDistinguishedNameResult = Get-ADObjectDistinguishedName -Identity $mockIdentity -ObjectClass 'User'
+                $getADObjectDistinguishedNameResult | Should -Be 'CN=Value'
+
+                Assert-MockCalled -CommandName Get-ADObject -ParameterFilter {
+                    $Filter -eq ('name -eq "{0}" -and ObjectClass -eq "{1}"' -f $mockIdentity, 'User')
+                } -Exactly -Times 1 -Scope It
+            }
+        }
+
+        Context 'When getting distinguished name for a organizational unit' {
+            BeforeAll {
+                Mock -CommandName Get-ADObject -MockWith {
+                    return @{
+                        DistinguishedName = 'CN=Value'
+                    }
+                }
+
+                $mockIdentity = 'SomeIdentity'
+            }
+
+            It 'Should return the correct values' {
+                $getADObjectDistinguishedNameResult = Get-ADObjectDistinguishedName -Identity $mockIdentity -ObjectClass 'OrganizationalUnit'
+                $getADObjectDistinguishedNameResult | Should -Be 'CN=Value'
+
+                Assert-MockCalled -CommandName Get-ADObject -ParameterFilter {
+                    $Filter -eq ('name -eq "{0}" -and ObjectClass -eq "{1}"' -f $mockIdentity, 'OrganizationalUnit')
+                } -Exactly -Times 1 -Scope It
+            }
+        }
+    }
 }
