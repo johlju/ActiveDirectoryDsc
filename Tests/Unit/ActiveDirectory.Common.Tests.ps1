@@ -2532,7 +2532,7 @@ InModuleScope 'ActiveDirectoryDsc.Common' {
                 $getADObjectDistinguishedNameResult | Should -Be 'CN=Value'
 
                 Assert-MockCalled -CommandName Get-ADObject -ParameterFilter {
-                    $Filter -eq ('name -eq "{0}" -and ObjectClass -eq "{1}"' -f $mockIdentity, 'User')
+                    $Filter -eq ('samAccountName -eq "{0}" -and ObjectClass -eq "{1}"' -f $mockIdentity, 'User')
                 } -Exactly -Times 1 -Scope It
             }
         }
